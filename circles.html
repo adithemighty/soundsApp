@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Circles</title>
+    <link rel="stylesheet" href="assets/circles.css">
+    <script type="text/javascript" src='assets/paper-full.min.js'></script>
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.9/howler.core.min.js'></script>
+
+    <script type="text/paperscript" canvas="myCanvas">
+      function getRandomNumber(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+      }
+
+      var activeCircles = [];
+
+      var sounds = [
+        new Howl({src: "soundFiles/dotted-spiral.mp3"}),
+        new Howl({src: "soundFiles/wipe.mp3"}),
+        new Howl({src: "soundFiles/moon.mp3"}),
+        new Howl({src: "soundFiles/bubbles.mp3"})
+      ];
+
+      function onKeyDown(event) {
+        var point = new Point(view.size.width, view.size.height) * Point.random();
+        var newCircle = new Path.Circle({
+          center: point,
+          radius: Math.random() * (500 - 150) + 150,
+          fillColor: "rgb(" + getRandomNumber(255) + ", " + getRandomNumber(255) + ", " + getRandomNumber(255) + ")"
+        });
+        sounds[getRandomNumber(4)].play();
+        activeCircles.push(newCircle);
+      }
+
+      function onFrame(event) {
+        activeCircles.map(function (element, index) {
+          element.fillColor.hue += 5;
+          element.scale(0.9);
+          if (element.area < 1) {
+            element.remove();
+            activeCircles.splice(index, 1);
+          }
+        });
+      }
+    </script>
+
+  </head>
+  <body>
+    <canvas id="myCanvas" resize="resize"></canvas>
+    <script type="text/javascript"></script>
+  </body>
+</html>
